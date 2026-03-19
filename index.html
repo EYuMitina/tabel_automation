@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Генератор табелей</title>
+
+<style>
+body {
+    font-family: Arial;
+    padding: 20px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid black;
+    text-align: center;
+    padding: 3px;
+}
+
+input {
+    width: 100%;
+    border: none;
+    text-align: center;
+}
+
+.controls {
+    margin: 10px 0;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Генератор табелей</h2>
+
+<div>
+Организация: <input id="org"><br><br>
+Группа: <input id="group"><br><br>
+Месяц: <input id="month"><br><br>
+</div>
+
+<div class="controls">
+<button onclick="addRow()">Добавить студента</button>
+<button onclick="downloadPDF()">Скачать PDF</button>
+</div>
+
+<table id="table">
+<thead>
+<tr>
+<th>№</th>
+<th>ФИО</th>
+<script>
+for (let i = 1; i <= 31; i++) {
+    document.write("<th>" + i + "</th>");
+}
+</script>
+</tr>
+</thead>
+
+<tbody id="tbody"></tbody>
+</table>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+
+let count = 0;
+
+function addRow() {
+    count++;
+    let row = "<tr>";
+    row += "<td>" + count + "</td>";
+    row += "<td><input></td>";
+
+    for (let i = 1; i <= 31; i++) {
+        row += "<td><input></td>";
+    }
+
+    row += "</tr>";
+
+    document.getElementById("tbody").innerHTML += row;
+}
+
+function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    let doc = new jsPDF('landscape');
+
+    doc.text("Табель учета посещений практики", 10, 10);
+
+    doc.text("Организация: " + document.getElementById("org").value, 10, 20);
+    doc.text("Группа: " + document.getElementById("group").value, 10, 30);
+    doc.text("Месяц: " + document.getElementById("month").value, 10, 40);
+
+    doc.save("tabel.pdf");
+}
+
+</script>
+
+</body>
+</html>
