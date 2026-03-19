@@ -68,9 +68,9 @@ body { font-family: Arial; padding: 20px; }
 <script>
 
 let students = [];
+let year = 2026; // можно потом вынести в поле
 
 function addStudent() {
-    // свернуть всех
     document.querySelectorAll('.calendar').forEach(c => c.classList.add('hidden'));
 
     let id = students.length;
@@ -85,20 +85,39 @@ function addStudent() {
         </div>
 
         <div class="calendar" id="cal-${id}">
-            ${createDays()}
         </div>
     `;
 
     document.getElementById('students').appendChild(div);
-    students.push(div);
+    students.push(id);
+
+    renderCalendar(id);
 }
 
-function createDays() {
+function renderCalendar(id) {
+    let month = parseInt(document.getElementById("month").value);
+
+    let days = new Date(year, month + 1, 0).getDate();
+
     let html = '';
-    for (let i = 1; i <= 31; i++) {
-        html += `<div class="day" onclick="setStatus(this)">Я</div>`;
+
+    for (let i = 1; i <= days; i++) {
+
+        let date = new Date(year, month, i);
+        let dayOfWeek = date.getDay();
+
+        let isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+
+        let value = isWeekend ? 'В' : 'Я';
+
+        html += `<div class="day" onclick="setStatus(this)">${value}<br><small>${i}</small></div>`;
     }
-    return html;
+
+    document.getElementById('cal-' + id).innerHTML = html;
+}
+
+function updateAllCalendars() {
+    students.forEach(id => renderCalendar(id));
 }
 
 function toggle(id) {
@@ -108,8 +127,11 @@ function toggle(id) {
 
 function setStatus(el) {
     let states = ['Я', 'Н', 'Б', 'В'];
-    let current = states.indexOf(el.innerText);
-    el.innerText = states[(current + 1) % states.length];
+    let current = states.indexOf(el.innerText.trim()[0]);
+    let next = states[(current + 1) % states.length];
+
+    let day = el.innerHTML.split("<br>")[1];
+    el.innerHTML = next + "<br>" + day;
 }
 
 </script>
