@@ -2,100 +2,97 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Генератор табелей</title>
+<title>Табель</title>
 
 <style>
-body {
-    font-family: Arial;
-    padding: 20px;
+body { font-family: Arial; padding: 20px; }
+
+.student {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
-table {
-    border-collapse: collapse;
-    width: 100%;
+.header {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
 }
 
-td, th {
-    border: 1px solid black;
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.day {
+    border: 1px solid #999;
+    padding: 5px;
     text-align: center;
-    padding: 3px;
+    cursor: pointer;
 }
 
-input {
-    width: 100%;
-    border: none;
-    text-align: center;
+.hidden {
+    display: none;
 }
 
-.controls {
-    margin: 10px 0;
-}
 </style>
 </head>
 
 <body>
 
-<h2>Генератор табелей</h2>
+<h2>Табель практики</h2>
 
-<div>
-Организация: <input id="org"><br><br>
-Группа: <input id="group"><br><br>
-Месяц: <input id="month"><br><br>
-</div>
+<button onclick="addStudent()">Добавить студента</button>
 
-<div class="controls">
-<button onclick="addRow()">Добавить студента</button>
-<button onclick="downloadPDF()">Скачать PDF</button>
-</div>
+<div id="students"></div>
 
-<table id="table">
-<thead>
-<tr>
-<th>№</th>
-<th>ФИО</th>
 <script>
-for (let i = 1; i <= 31; i++) {
-    document.write("<th>" + i + "</th>");
+
+let students = [];
+
+function addStudent() {
+    // свернуть всех
+    document.querySelectorAll('.calendar').forEach(c => c.classList.add('hidden'));
+
+    let id = students.length;
+
+    let div = document.createElement('div');
+    div.className = 'student';
+
+    div.innerHTML = `
+        <div class="header" onclick="toggle(${id})">
+            <input placeholder="ФИО">
+            <span>▼</span>
+        </div>
+
+        <div class="calendar" id="cal-${id}">
+            ${createDays()}
+        </div>
+    `;
+
+    document.getElementById('students').appendChild(div);
+    students.push(div);
 }
-</script>
-</tr>
-</thead>
 
-<tbody id="tbody"></tbody>
-</table>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<script>
-
-let count = 0;
-
-function addRow() {
-    count++;
-    let row = "<tr>";
-    row += "<td>" + count + "</td>";
-    row += "<td><input></td>";
-
+function createDays() {
+    let html = '';
     for (let i = 1; i <= 31; i++) {
-        row += "<td><input></td>";
+        html += `<div class="day" onclick="setStatus(this)">Я</div>`;
     }
-
-    row += "</tr>";
-
-    document.getElementById("tbody").innerHTML += row;
+    return html;
 }
 
-function downloadPDF() {
-    const { jsPDF } = window.jspdf;
-    let doc = new jsPDF('landscape');
+function toggle(id) {
+    let el = document.getElementById('cal-' + id);
+    el.classList.toggle('hidden');
+}
 
-    doc.text("Табель учета посещений практики", 10, 10);
-
-    doc.text("Организация: " + document.getElementById("org").value, 10, 20);
-    doc.text("Группа: " + document.getElementById("group").value, 10, 30);
-    doc.text("Месяц: " + document.getElementById("month").value, 10, 40);
-
-    doc.save("tabel.pdf");
+function setStatus(el) {
+    let states = ['Я', 'Н', 'Б', 'В'];
+    let current = states.indexOf(el.innerText);
+    el.innerText = states[(current + 1) % states.length];
 }
 
 </script>
