@@ -2,139 +2,603 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Табель</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Табель практики</title>
 
 <style>
-body { font-family: Arial; padding: 20px; }
-
-.student {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    cursor: pointer;
-}
-
-.calendar {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-    margin-top: 10px;
-}
-
-.day {
-    border: 1px solid #999;
-    padding: 5px;
-    text-align: center;
-    cursor: pointer;
-}
-
-.hidden {
-    display: none;
-}
-
-</style>
-</head>
-
-<body>
-
-<h2>Табель практики</h2>
-
-<button onclick="addStudent()">Добавить студента</button>
-
-<div id="students"></div>
-
-<label>Месяц
-    <select id="month" onchange="updateAllCalendars()"
-        <option value="0">Январь</option>
-        <option value="1">Февраль</option>
-        <option value="2">Март</option>
-        <option value="3">Апрель</option>
-        <option value="4">Май</option>
-        <option value="5">Июнь</option>
-        <option value="6">Июль</option>
-        <option value="7">Август</option>
-        <option value="8">Сентябрь</option>
-        <option value="9">Октябрь</option>
-        <option value="10">Ноябрь</option>
-        <option value="11">Декабрь</option>
-    </select>
-</label>
-
-<script>
-
-let students = [];
-let year = 2026;
-
-function addStudent() {
-    document.querySelectorAll('.calendar').forEach(c => c.classList.add('hidden'));
-
-    let id = students.length;
-
-    let div = document.createElement('div');
-    div.className = 'student';
-
-    div.innerHTML = `
-        <div class="header" onclick="toggle(${id})">
-            <input placeholder="ФИО">
-            <span>▼</span>
-        </div>
-
-        <div class="calendar" id="cal-${id}">
-        </div>
-    `;
-
-    document.getElementById('students').appendChild(div);
-    students.push(id);
-
-    renderCalendar(id);
-}
-
-function renderCalendar(id) {
-    let month = parseInt(document.getElementById("month").value);
-
-    let days = new Date(year, month + 1, 0).getDate();
-
-    let html = '';
-
-    for (let i = 1; i <= days; i++) {
-
-        let date = new Date(year, month, i);
-        let dayOfWeek = date.getDay();
-
-        let isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
-
-        let value = isWeekend ? 'В' : 'Я';
-
-        html += `<div class="day" onclick="setStatus(this)">${value}<br><small>${i}</small></div>`;
+    * {
+        box-sizing: border-box;
     }
 
-    document.getElementById('cal-' + id).innerHTML = html;
-}
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f3f4f6;
+        color: #222;
+    }
 
-function updateAllCalendars() {
-    students.forEach(id => renderCalendar(id));
-}
+    .page {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px;
+    }
 
-function toggle(id) {
-    let el = document.getElementById('cal-' + id);
-    el.classList.toggle('hidden');
-}
+    .top-panel {
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+    }
 
-function setStatus(el) {
-    let states = ['Я', 'Н', 'Б', 'В'];
-    let current = states.indexOf(el.innerText.trim()[0]);
-    let next = states[(current + 1) % states.length];
+    .top-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+        margin-bottom: 16px;
+    }
 
-    let day = el.innerHTML.split("<br>")[1];
-    el.innerHTML = next + "<br>" + day;
-}
+    label {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 6px;
+        color: #555;
+    }
 
+    input[type="text"], select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #d0d5dd;
+        border-radius: 10px;
+        background: #fff;
+        font-size: 15px;
+    }
+
+    .buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    button {
+        border: none;
+        border-radius: 10px;
+        padding: 10px 16px;
+        font-size: 15px;
+        cursor: pointer;
+        background: #2563eb;
+        color: white;
+    }
+
+    button.secondary {
+        background: #e5e7eb;
+        color: #222;
+    }
+
+    .student-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+        margin-bottom: 16px;
+        overflow: hidden;
+    }
+
+    .student-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px 18px;
+        cursor: pointer;
+        border-bottom: 1px solid #eef0f3;
+    }
+
+    .student-title {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .student-name-input {
+        width: 100%;
+        font-size: 18px;
+        font-weight: 600;
+        border: none;
+        outline: none;
+        background: transparent;
+        padding: 0;
+        color: #222;
+    }
+
+    .student-subtitle {
+        font-size: 13px;
+        color: #777;
+        margin-top: 4px;
+    }
+
+    .chevron {
+        font-size: 18px;
+        color: #666;
+        width: 28px;
+        text-align: center;
+        user-select: none;
+    }
+
+    .student-body {
+        padding: 18px;
+    }
+
+    .collapsed .student-body {
+        display: none;
+    }
+
+    .calendar-head {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        margin-bottom: 14px;
+    }
+
+    .calendar-head button {
+        width: 38px;
+        height: 38px;
+        padding: 0;
+        border-radius: 50%;
+        background: #eef2ff;
+        color: #1d4ed8;
+        font-size: 18px;
+    }
+
+    .calendar-title {
+        min-width: 180px;
+        text-align: center;
+        font-size: 22px;
+        font-weight: 700;
+    }
+
+    .weekdays, .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+    }
+
+    .weekdays {
+        margin-bottom: 8px;
+    }
+
+    .weekday {
+        text-align: center;
+        font-size: 13px;
+        color: #666;
+        padding: 6px 0;
+        font-weight: 600;
+    }
+
+    .day-cell {
+        min-height: 88px;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        cursor: pointer;
+        user-select: none;
+        transition: transform 0.08s ease, box-shadow 0.08s ease;
+    }
+
+    .day-cell:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+    }
+
+    .day-empty {
+        background: transparent;
+        border: none;
+        cursor: default;
+        box-shadow: none;
+    }
+
+    .day-number {
+        font-size: 14px;
+        color: #555;
+    }
+
+    .day-status {
+        align-self: flex-start;
+        min-width: 34px;
+        text-align: center;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #fff;
+    }
+
+    .status-ya { background: #22c55e; }
+    .status-n  { background: #ef4444; }
+    .status-b  { background: #f59e0b; }
+    .status-v  { background: #9ca3af; }
+
+    .legend {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 16px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+
+    .empty-state {
+        text-align: center;
+        color: #777;
+        padding: 30px 10px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    }
+
+    @media (max-width: 700px) {
+        .page {
+            padding: 14px;
+        }
+
+        .calendar-title {
+            font-size: 18px;
+            min-width: 130px;
+        }
+
+        .day-cell {
+            min-height: 72px;
+            padding: 6px;
+        }
+
+        .student-name-input {
+            font-size: 16px;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="page">
+
+    <div class="top-panel">
+        <div class="top-grid">
+            <div>
+                <label for="org">Организация</label>
+                <input type="text" id="org" placeholder="Например, ООО Ромашка">
+            </div>
+
+            <div>
+                <label for="group">Группа</label>
+                <input type="text" id="group" placeholder="Например, КСК-313">
+            </div>
+
+            <div>
+                <label for="globalMonth">Месяц</label>
+                <select id="globalMonth" onchange="updateAllCalendars()">
+                    <option value="0">Январь</option>
+                    <option value="1">Февраль</option>
+                    <option value="2">Март</option>
+                    <option value="3">Апрель</option>
+                    <option value="4">Май</option>
+                    <option value="5">Июнь</option>
+                    <option value="6">Июль</option>
+                    <option value="7">Август</option>
+                    <option value="8">Сентябрь</option>
+                    <option value="9">Октябрь</option>
+                    <option value="10">Ноябрь</option>
+                    <option value="11">Декабрь</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="globalYear">Год</label>
+                <select id="globalYear" onchange="updateAllCalendars()">
+                    <option value="2025">2025</option>
+                    <option value="2026" selected>2026</option>
+                    <option value="2027">2027</option>
+                    <option value="2028">2028</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button onclick="addStudent()">Добавить студента</button>
+            <button class="secondary" onclick="expandAll()">Развернуть всех</button>
+            <button class="secondary" onclick="collapseAll()">Свернуть всех</button>
+        </div>
+    </div>
+
+    <div id="studentsContainer"></div>
+
+    <div id="emptyState" class="empty-state">
+        Пока нет ни одного студента. Нажми «Добавить студента».
+    </div>
+
+</div>
+
+<script>
+    const monthNames = [
+        "Январь", "Февраль", "Март", "Апрель",
+        "Май", "Июнь", "Июль", "Август",
+        "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+    ];
+
+    const weekdayNames = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+
+    const statusOrder = ["Я", "Н", "Б", "В"];
+    const statusClasses = {
+        "Я": "status-ya",
+        "Н": "status-n",
+        "Б": "status-b",
+        "В": "status-v"
+    };
+
+    let students = [];
+    let nextStudentId = 1;
+
+    function getSelectedMonth() {
+        return parseInt(document.getElementById("globalMonth").value, 10);
+    }
+
+    function getSelectedYear() {
+        return parseInt(document.getElementById("globalYear").value, 10);
+    }
+
+    function getDaysInMonth(year, month) {
+        return new Date(year, month + 1, 0).getDate();
+    }
+
+    function getMondayFirstDay(jsDay) {
+        return jsDay === 0 ? 6 : jsDay - 1;
+    }
+
+    function getDefaultStatus(year, month, day) {
+        const date = new Date(year, month, day);
+        const jsDay = date.getDay();
+        return (jsDay === 0 || jsDay === 6) ? "В" : "Я";
+    }
+
+    function addStudent() {
+        collapseAll();
+
+        const student = {
+            id: nextStudentId++,
+            name: "",
+            statuses: {}
+        };
+
+        students.push(student);
+        renderStudents();
+        openStudent(student.id);
+    }
+
+    function collapseAll() {
+        document.querySelectorAll(".student-card").forEach(card => {
+            card.classList.add("collapsed");
+            const chevron = card.querySelector(".chevron");
+            if (chevron) chevron.textContent = "▸";
+        });
+    }
+
+    function expandAll() {
+        document.querySelectorAll(".student-card").forEach(card => {
+            card.classList.remove("collapsed");
+            const chevron = card.querySelector(".chevron");
+            if (chevron) chevron.textContent = "▾";
+        });
+    }
+
+    function toggleStudent(id) {
+        const card = document.getElementById("student-" + id);
+        const chevron = card.querySelector(".chevron");
+        const isCollapsed = card.classList.contains("collapsed");
+
+        if (isCollapsed) {
+            card.classList.remove("collapsed");
+            chevron.textContent = "▾";
+        } else {
+            card.classList.add("collapsed");
+            chevron.textContent = "▸";
+        }
+    }
+
+    function openStudent(id) {
+        const card = document.getElementById("student-" + id);
+        if (!card) return;
+        card.classList.remove("collapsed");
+        const chevron = card.querySelector(".chevron");
+        if (chevron) chevron.textContent = "▾";
+    }
+
+    function updateStudentName(id, value) {
+        const student = students.find(s => s.id === id);
+        if (!student) return;
+        student.name = value;
+        const subtitle = document.getElementById("subtitle-" + id);
+        if (subtitle) {
+            subtitle.textContent = value.trim() === "" ? "ФИО не указано" : "Заполняется табель";
+        }
+    }
+
+    function getStatus(student, year, month, day) {
+        const key = `${year}-${month + 1}-${day}`;
+        return student.statuses[key] || getDefaultStatus(year, month, day);
+    }
+
+    function setNextStatus(studentId, day) {
+        const student = students.find(s => s.id === studentId);
+        if (!student) return;
+
+        const year = getSelectedYear();
+        const month = getSelectedMonth();
+        const key = `${year}-${month + 1}-${day}`;
+
+        const current = getStatus(student, year, month, day);
+        const currentIndex = statusOrder.indexOf(current);
+        const next = statusOrder[(currentIndex + 1) % statusOrder.length];
+
+        student.statuses[key] = next;
+        renderStudents();
+        openStudent(studentId);
+    }
+
+    function changeMonth(delta) {
+        const monthSelect = document.getElementById("globalMonth");
+        const yearSelect = document.getElementById("globalYear");
+
+        let month = parseInt(monthSelect.value, 10);
+        let year = parseInt(yearSelect.value, 10);
+
+        month += delta;
+
+        if (month < 0) {
+            month = 11;
+            year--;
+        } else if (month > 11) {
+            month = 0;
+            year++;
+        }
+
+        monthSelect.value = String(month);
+
+        let hasYear = false;
+        for (const option of yearSelect.options) {
+            if (parseInt(option.value, 10) === year) {
+                hasYear = true;
+                break;
+            }
+        }
+
+        if (!hasYear) {
+            const option = document.createElement("option");
+            option.value = String(year);
+            option.textContent = String(year);
+            yearSelect.appendChild(option);
+        }
+
+        yearSelect.value = String(year);
+        updateAllCalendars();
+    }
+
+    function updateAllCalendars() {
+        renderStudents();
+    }
+
+    function buildCalendar(student) {
+        const year = getSelectedYear();
+        const month = getSelectedMonth();
+        const daysInMonth = getDaysInMonth(year, month);
+        const firstDay = getMondayFirstDay(new Date(year, month, 1).getDay());
+
+        let html = `
+            <div class="calendar-head">
+                <button type="button" onclick="event.stopPropagation(); changeMonth(-1)">‹</button>
+                <div class="calendar-title">${monthNames[month]} ${year}</div>
+                <button type="button" onclick="event.stopPropagation(); changeMonth(1)">›</button>
+            </div>
+
+            <div class="weekdays">
+                ${weekdayNames.map(day => `<div class="weekday">${day}</div>`).join("")}
+            </div>
+
+            <div class="calendar-grid">
+        `;
+
+        for (let i = 0; i < firstDay; i++) {
+            html += `<div class="day-cell day-empty"></div>`;
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const status = getStatus(student, year, month, day);
+            const statusClass = statusClasses[status] || "status-v";
+
+            html += `
+                <div class="day-cell" onclick="setNextStatus(${student.id}, ${day})">
+                    <div class="day-number">${day}</div>
+                    <div class="day-status ${statusClass}">${status}</div>
+                </div>
+            `;
+        }
+
+        html += `
+            </div>
+
+            <div class="legend">
+                <div class="legend-item"><span class="dot status-ya"></span> Я — явка</div>
+                <div class="legend-item"><span class="dot status-n"></span> Н — неявка</div>
+                <div class="legend-item"><span class="dot status-b"></span> Б — больничный</div>
+                <div class="legend-item"><span class="dot status-v"></span> В — выходной</div>
+            </div>
+        `;
+
+        return html;
+    }
+
+    function renderStudents() {
+        const container = document.getElementById("studentsContainer");
+        const emptyState = document.getElementById("emptyState");
+
+        if (students.length === 0) {
+            container.innerHTML = "";
+            emptyState.style.display = "block";
+            return;
+        }
+
+        emptyState.style.display = "none";
+
+        container.innerHTML = students.map(student => `
+            <div class="student-card" id="student-${student.id}">
+                <div class="student-header" onclick="toggleStudent(${student.id})">
+                    <div class="student-title">
+                        <input
+                            class="student-name-input"
+                            type="text"
+                            placeholder="Введите ФИО студента"
+                            value="${escapeHtml(student.name)}"
+                            onclick="event.stopPropagation()"
+                            oninput="updateStudentName(${student.id}, this.value)"
+                        >
+                        <div class="student-subtitle" id="subtitle-${student.id}">
+                            ${student.name.trim() === "" ? "ФИО не указано" : "Заполняется табель"}
+                        </div>
+                    </div>
+                    <div class="chevron">▸</div>
+                </div>
+                <div class="student-body">
+                    ${buildCalendar(student)}
+                </div>
+            </div>
+        `).join("");
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;");
+    }
+
+    document.getElementById("globalMonth").value = String(new Date().getMonth());
+    document.getElementById("globalYear").value = "2026";
 </script>
-
 </body>
 </html>
