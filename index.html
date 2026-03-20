@@ -321,6 +321,7 @@
 
         <div class="buttons">
             <button onclick="addStudent()">Добавить студента</button>
+            <button onclick="generatePdfView()">Скачать табель</button>
             <button class="secondary" onclick="expandAll()">Развернуть всех</button>
             <button class="secondary" onclick="collapseAll()">Свернуть всех</button>
         </div>
@@ -597,6 +598,347 @@
             .replaceAll('"', "&quot;");
     }
 
+    function getMonthNameGenitive(monthIndex) {
+        const names = [
+            "Январь", "Февраль", "Март", "Апрель",
+            "Май", "Июнь", "Июль", "Август",
+            "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+        ];
+        return names[monthIndex];
+    }
+
+    function countAttendance(student, year, month) {
+        const daysInMonth = getDaysInMonth(year, month);
+        let total = 0;
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            if (getStatus(student, year, month, day) === "Я") {
+                total++;
+            }
+        }
+
+        return total;
+    }
+
+    function validateBeforePdf() {
+        const org = document.getElementById("org").value.trim();
+        const group = document.getElementById("group").value.trim();
+
+        if (!org) {
+            alert("Заполните организацию.");
+            return false;
+        }
+
+        if (!group) {
+            alert("Заполните группу.");
+            return false;
+        }
+
+        if (students.length === 0) {
+            alert("Добавьте хотя бы одного студента.");
+            return false;
+        }
+
+        for (const student of students) {
+            if (!student.name.trim()) {
+                alert("У одного из студентов не заполнено ФИО.");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function buildPrintTableRows() {
+        const year = getSelectedYear();
+        const month = getSelectedMonth();
+        const daysInMonth = getDaysInMonth(year, month);
+
+        return students.map((student, index) => {
+            let dayCells = "";
+
+            for (let day = 1; day <= 31; day++) {
+                const isActiveDay = day <= daysInMonth;
+                const status = isActiveDay ? getStatus(student, year, month, day) : "";
+
+                dayCells += `
+                    <td class="day-col ${!isActiveDay ? 'unused-day' : ''}">
+                        ${status}
+                    </td>
+                `;
+            }
+
+            return `
+                <tr>
+                    <td class="num-col">${index + 1}</td>
+                    <td class="fio-col">${escapeHtml(student.name)}</td>
+                    ${dayCells}
+                    <td class="total-col">${countAttendance(student, year, month)}</td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+    function generatePdfView() {
+        if (!validateBeforePdf()) return;
+
+        const org = document.getElementById("org").value.trim();
+        const group = document.getElementById("group").value.trim();
+        const month = getSelectedMonth();
+        const year = getSelectedYear();
+        const daysInMonth = getDaysInMonth(year, month);
+        const monthName = getMonthNameGenitive(month);
+
+        const printWindow = window.open("", "_blank");
+
+        if (!printWindow) {
+            alert("Браузер заблокировал окно печати. Разрешите всплывающие окна для этой страницы.");
+            return;
+        }
+
+        const html = `
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Табель - ${escapeHtml(group)} - ${escapeHtml(monthName)} - ${year}</title>
+<style>
+    @page {
+        size: A4 landscape;
+        margin: 10mm;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        color: #000;
+        background: #fff;
+    }
+
+    .print-page {
+        width: 100%;
+    }
+
+    .title {
+        text-align: center;
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .subtitle {
+        text-align: center;
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+
+    .org-line {
+        font-size: 13px;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .group-line {
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+
+    .attendance-table th,
+    .attendance-table td {
+        border: 1px solid #000;
+        font-size: 10px;
+        padding: 3px 2px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .attendance-table thead th {
+        font-weight: 700;
+    }
+
+    .num-col {
+        width: 28px;
+    }
+
+    .fio-col {
+        width: 220px;
+        text-align: left !important;
+        padding: 4px 6px !important;
+        white-space: normal;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+        line-height: 1.15;
+    }
+
+    .day-col {
+        width: 24px;
+    }
+
+    .total-col {
+        width: 40px;
+        font-weight: 700;
+    }
+
+    .unused-day {
+        background: #f3f4f6;
+        color: transparent;
+    }
+
+    .legend {
+        margin-top: 10px;
+        font-size: 11px;
+    }
+
+    .signatures {
+        margin-top: 18px;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .signature-row {
+        margin-top: 18px;
+        font-size: 12px;
+    }
+
+    .signature-line {
+        display: inline-block;
+        min-width: 240px;
+        border-bottom: 1px solid #000;
+        height: 16px;
+        vertical-align: bottom;
+    }
+
+    .signature-line.small {
+        min-width: 120px;
+    }
+
+    .signature-line.medium {
+        min-width: 180px;
+    }
+
+    .stamp {
+        margin-top: 20px;
+        font-size: 12px;
+    }
+
+    .hint {
+        font-size: 10px;
+        color: #444;
+    }
+
+    .print-controls {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+        background: #f8fafc;
+        position: sticky;
+        top: 0;
+    }
+
+    .print-controls button {
+        border: none;
+        background: #2563eb;
+        color: #fff;
+        border-radius: 8px;
+        padding: 10px 14px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    @media print {
+        .print-controls {
+            display: none !important;
+        }
+
+        body {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+    }
+</style>
+</head>
+<body>
+    <div class="print-controls">
+        <button onclick="window.print()">Печать / Сохранить в PDF</button>
+    </div>
+
+    <div class="print-page">
+        <div class="title">ТАБЕЛЬ</div>
+        <div class="subtitle">учёта прохождения обучающимся производственной (по профилю специальности/преддипломной) практики в</div>
+        <div class="org-line"><strong>${escapeHtml(org)}</strong></div>
+        <div class="group-line">Группа <strong>${escapeHtml(group)}</strong></div>
+
+        <table class="attendance-table">
+            <thead>
+                <tr>
+                    <th colspan="34">Отметки о явках / неявках на практику по числам месяца</th>
+                </tr>
+                <tr>
+                    <th colspan="34">${escapeHtml(monthName)}, ${year} г.</th>
+                </tr>
+                <tr>
+                    <th class="num-col">№ п/п</th>
+                    <th class="fio-col">ФИО</th>
+                    ${Array.from({ length: 31 }, (_, i) => {
+                        const day = i + 1;
+                        return `<th class="day-col ${day > daysInMonth ? 'unused-day' : ''}">${day}</th>`;
+                    }).join("")}
+                    <th class="total-col">итог</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${buildPrintTableRows()}
+            </tbody>
+        </table>
+
+        <div class="legend">
+            Условные обозначения: Я — явка; Н — неявка; Б — больничный; В — официальный выходной
+        </div>
+
+        <div class="signatures">
+            <div class="signature-row">
+                Руководитель практики от предприятия
+                <span class="signature-line"></span>
+                <span class="signature-line small"></span> /
+                <span class="signature-line medium"></span> /
+            </div>
+            <div class="hint">
+                должность&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                подпись&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                расшифровка подписи
+            </div>
+
+            <div class="stamp">М.П.</div>
+
+            <div class="signature-row">
+                Руководитель практики от колледжа
+                <span class="signature-line small"></span> /
+                <span class="signature-line medium"></span> /
+            </div>
+            <div class="hint">
+                подпись&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                расшифровка подписи
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+        `;
+
+        printWindow.document.open();
+        printWindow.document.write(html);
+        printWindow.document.close();
+    }
+   
     document.getElementById("globalMonth").value = String(new Date().getMonth());
     document.getElementById("globalYear").value = "2026";
 </script>
