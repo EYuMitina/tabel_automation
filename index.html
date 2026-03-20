@@ -704,166 +704,194 @@
 <title>Табель - ${escapeHtml(group)} - ${escapeHtml(monthName)} - ${year}</title>
 <style>
     @page {
-        size: A4 landscape;
-        margin: 6mm;
-    }
+    size: A4 landscape;
+    margin: 6mm;
+}
 
-    * {
-        box-sizing: border-box;
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #000;
+    background: #fff;
+}
+
+.print-controls {
+    padding: 10px 12px;
+    border-bottom: 1px solid #ddd;
+    background: #f8fafc;
+    position: sticky;
+    top: 0;
+}
+
+.print-controls button {
+    border: none;
+    background: #2563eb;
+    color: #fff;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.print-page {
+    width: 100%;
+    padding: 0;
+}
+
+.title {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 2px;
+    letter-spacing: 0.2px;
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 11px;
+    line-height: 1.15;
+    margin-bottom: 4px;
+}
+
+.org-line {
+    text-align: center;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.group-line {
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.attendance-table th,
+.attendance-table td {
+    border: 1px solid #000;
+    font-size: 8px;
+    padding: 1px 1px;
+    text-align: center;
+    vertical-align: middle;
+    height: 19px;
+}
+
+.attendance-table thead th {
+    font-weight: 700;
+}
+
+.num-col {
+    width: 26px;
+}
+
+.fio-col {
+    width: 210px;
+    text-align: left !important;
+    padding: 2px 4px !important;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    line-height: 1.05;
+}
+
+.day-col {
+    width: 19px;
+    white-space: nowrap;
+}
+
+.total-col {
+    width: 32px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.unused-day {
+    background: #fff;
+    color: transparent;
+}
+
+.legend {
+    margin-top: 8px;
+    font-size: 10px;
+    line-height: 1.2;
+}
+
+.signatures {
+    margin-top: 18px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    font-size: 11px;
+}
+
+.signature-main-line {
+    margin-top: 10px;
+    white-space: nowrap;
+}
+
+.line-long,
+.line-mid,
+.line-short {
+    display: inline-block;
+    border-bottom: 1px solid #000;
+    height: 12px;
+    vertical-align: bottom;
+}
+
+.line-long {
+    width: 190px;
+}
+
+.line-mid {
+    width: 120px;
+}
+
+.line-short {
+    width: 95px;
+}
+
+.signature-hint {
+    font-size: 9px;
+    color: #222;
+    margin-top: 2px;
+    line-height: 1.1;
+}
+
+.signature-hint.enterprise {
+    margin-left: 225px;
+}
+
+.stamp-row {
+    margin-top: 18px;
+    margin-left: 250px;
+    font-size: 11px;
+}
+
+.signature-college {
+    margin-top: 24px;
+}
+
+.signature-hint.college {
+    margin-left: 210px;
+}
+
+@media print {
+    .print-controls {
+        display: none !important;
     }
 
     body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        color: #000;
-        background: #fff;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
-
-    .print-page {
-        width: 100%;
-    }
-
-    .title {
-        text-align: center;
-        font-size: 16px;
-        font-weight: 700;
-        margin-bottom: 6px;
-    }
-
-    .subtitle {
-        text-align: center;
-        font-size: 13px;
-        margin-bottom: 10px;
-    }
-
-    .org-line {
-        font-size: 13px;
-        margin-bottom: 10px;
-        text-align: center;
-    }
-
-    .group-line {
-        font-size: 13px;
-        margin-bottom: 10px;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        table-layout: fixed;
-    }
-
-    .attendance-table th,
-    .attendance-table td {
-        border: 1px solid #000;
-        font-size: 10px;
-        padding: 3px 2px;
-        text-align: center;
-        vertical-align: middle;
-    }
-
-    .attendance-table thead th {
-        font-weight: 700;
-    }
-
-    .num-col {
-        width: 20px;
-    }
-
-    .fio-col {
-        width: 270px;
-        text-align: left !important;
-        padding: 4px 6px !important;
-        white-space: normal;
-        word-break: break-word;
-        overflow-wrap: anywhere;
-        line-height: 1.15;
-    }
-
-    .day-col {
-        width: 22px;
-    }
-
-    .total-col {
-        width: 40px;
-        font-weight: 700;
-    }
-
-    .unused-day {
-        background: #f3f4f6;
-        color: transparent;
-    }
-
-    .legend {
-        margin-top: 10px;
-        font-size: 11px;
-    }
-
-    .signatures {
-        margin-top: 18px;
-        page-break-inside: avoid;
-        break-inside: avoid;
-    }
-
-    .signature-row {
-        margin-top: 18px;
-        font-size: 12px;
-    }
-
-    .signature-line {
-        display: inline-block;
-        min-width: 240px;
-        border-bottom: 1px solid #000;
-        height: 16px;
-        vertical-align: bottom;
-    }
-
-    .signature-line.small {
-        min-width: 120px;
-    }
-
-    .signature-line.medium {
-        min-width: 180px;
-    }
-
-    .stamp {
-        margin-top: 20px;
-        font-size: 12px;
-    }
-
-    .hint {
-        font-size: 10px;
-        color: #444;
-    }
-
-    .print-controls {
-        padding: 12px;
-        border-bottom: 1px solid #ddd;
-        background: #f8fafc;
-        position: sticky;
-        top: 0;
-    }
-
-    .print-controls button {
-        border: none;
-        background: #2563eb;
-        color: #fff;
-        border-radius: 8px;
-        padding: 10px 14px;
-        font-size: 14px;
-        cursor: pointer;
-    }
-
-    @media print {
-        .print-controls {
-            display: none !important;
-        }
-
-        body {
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-    }
+}
 </style>
 </head>
 <body>
@@ -905,30 +933,30 @@
         </div>
 
         <div class="signatures">
-            <div class="signature-row">
-                Руководитель практики от предприятия
-                <span class="signature-line"></span>
-                <span class="signature-line small"></span> /
-                <span class="signature-line medium"></span> /
-            </div>
-            <div class="hint">
-                должность&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                подпись&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                расшифровка подписи
-            </div>
+    <div class="signature-main-line">
+        Руководитель практики от предприятия
+        <span class="line-long"></span>
+        <span class="line-mid"></span> /
+        <span class="line-short"></span> /
+    </div>
+    <div class="signature-hint enterprise">
+        должность&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        подпись&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        расшифровка подписи
+    </div>
 
-            <div class="stamp">М.П.</div>
+    <div class="stamp-row">М.П.</div>
 
-            <div class="signature-row">
-                Руководитель практики от колледжа
-                <span class="signature-line small"></span> /
-                <span class="signature-line medium"></span> /
-            </div>
-            <div class="hint">
-                подпись&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                расшифровка подписи
-            </div>
-        </div>
+    <div class="signature-main-line signature-college">
+        Руководитель практики от колледжа
+        <span class="line-mid"></span> /
+        <span class="line-long"></span> /
+    </div>
+    <div class="signature-hint college">
+        подпись&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        расшифровка подписи
+    </div>
+</div>
     </div>
 </body>
 </html>
