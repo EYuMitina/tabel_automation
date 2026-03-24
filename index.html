@@ -435,7 +435,7 @@
         student.name = value;
         const subtitle = document.getElementById("subtitle-" + id);
         if (subtitle) {
-            subtitle.textContent = value.trim() === "" ? "ФИО не указано" : "Заполняется табель";
+            subtitle.textContent = value.trim() === "" ? "ФИО не указано" : "Табель заполняется";
         }
     }
 
@@ -578,7 +578,7 @@
                             oninput="updateStudentName(${student.id}, this.value)"
                         >
                         <div class="student-subtitle" id="subtitle-${student.id}">
-                            ${student.name.trim() === "" ? "ФИО не указано" : "Заполняется табель"}
+                            ${student.name.trim() === "" ? "ФИО не указано" : "Табель заполняется"}
                         </div>
                     </div>
                     <div class="chevron">▸</div>
@@ -871,7 +871,7 @@ table {
 
 .stamp-row {
     margin-top: 18px;
-    margin-left: 250px;
+    margin-left: 360px;
     font-size: 14px;
 }
 
