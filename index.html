@@ -826,79 +826,76 @@ table {
 }
 
 .signatures {
-    margin-top: 18px;
+    margin-top: 30px;
     page-break-inside: avoid;
     break-inside: avoid;
     font-size: 14px;
 }
 
-.signature-main-line {
-    margin-top: 10px;
+/* строка с текстом и линиями */
+.signature-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.label {
     white-space: nowrap;
 }
 
-.line-long,
-.line-mid,
-.line-short {
-    display: inline-block;
-    border-bottom: 1px solid #000;
-    height: 12px;
-    vertical-align: bottom;
-}
-
-.line-long {
-    width: 190px;
-}
-
-.line-mid {
-    width: 120px;
-}
-
-.line-short {
-    width: 95px;
-}
-
-.hint-long {
-    width: 190px;
-    text-align: center;
-}
-
-.hint-mid {
-    width: 120px;
-    text-align: center;
-}
-
-.hint-short {
-    width: 95px;
-    text-align: center;
-}
-
-.signature-hint {
-    font-size: 9px;
-    color: #222;
-    margin-top: 2px;
-    margin-left: 40px;
-    line-height: 1.1;
-
+/* контейнер линий */
+.lines {
     display: flex;
-    justify-content: flex-start;
     gap: 10px;
+    flex: 1;
 }
 
-.stamp-row {
+/* сами линии */
+.line {
+    border-bottom: 1px solid #000;
+    height: 18px;
+}
+
+/* фиксированные ширины */
+.line-long  { width: 190px; }
+.line-mid   { width: 120px; }
+.line-short { width: 95px; }
+
+/* подписи под линиями */
+.signature-hint {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+    margin-left: auto;
+    width: fit-content;
+}
+
+/* подписи */
+.hint {
+    text-align: center;
+    font-size: 11px;
+}
+
+.hint-long  { width: 190px; }
+.hint-mid   { width: 120px; }
+.hint-short { width: 95px; }
+
+/* печать (М.П.) */
+.stamp {
     margin-top: 18px;
-    margin-left: 360px;
+    margin-left: 50%;
     font-size: 14px;
 }
 
+/* второй блок */
 .signature-college {
-    margin-top: 24px;
+    margin-top: 26px;
 }
 
-.signature-hint.college {
-    margin-left: 210px;
+.hint-college {
+    margin-left: auto;
 }
-
 @media print {
     .print-controls {
         display: none !important;
@@ -950,30 +947,43 @@ table {
         </div>
 
         <div class="signatures">
-    <div class="signature-main-line">
-        Руководитель практики от предприятия
-        <span class="line-long"></span>
-        <span class="line-mid"></span> /
-        <span class="line-short"></span> /
-    </div>
-    <div class="signature-hint enterprise">
-        <span class="hint-long">должность</span>
-        <span class="hint-mid">подпись</span>
-        <span class="hint-short">расшифровка подписи</span>
+
+    <!-- ПРЕДПРИЯТИЕ -->
+    <div class="signature-row">
+        <span class="label">Руководитель практики от предприятия</span>
+
+        <div class="lines">
+            <span class="line line-long"></span>
+            <span class="line line-mid"></span>
+            <span class="line line-short"></span>
+        </div>
     </div>
 
-    <div class="stamp-row">М.П.</div>
+    <div class="signature-hint">
+        <span class="hint hint-long">должность</span>
+        <span class="hint hint-mid">подпись</span>
+        <span class="hint hint-short">расшифровка подписи</span>
+    </div>
 
-    <div class="signature-main-line signature-college">
-        Руководитель практики от колледжа
-        <span class="line-mid"></span> /
-        <span class="line-long"></span> /
+    <div class="stamp">М.П.</div>
+
+    <!-- КОЛЛЕДЖ -->
+    <div class="signature-row signature-college">
+        <span class="label">Руководитель практики от колледжа</span>
+
+        <div class="lines">
+            <span class="line line-mid"></span>
+            <span class="line line-long"></span>
+        </div>
     </div>
-    <div class="signature-hint college">
-        подпись&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        расшифровка подписи
+
+    <div class="signature-hint hint-college">
+        <span class="hint hint-mid">подпись</span>
+        <span class="hint hint-long">расшифровка подписи</span>
     </div>
+
 </div>
+
     </div>
 </body>
 </html>
