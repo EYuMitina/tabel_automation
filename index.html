@@ -858,15 +858,30 @@ table {
     width: 95px;
 }
 
+.hint-long {
+    width: 190px;
+    text-align: center;
+}
+
+.hint-mid {
+    width: 120px;
+    text-align: center;
+}
+
+.hint-short {
+    width: 95px;
+    text-align: center;
+}
+
 .signature-hint {
     font-size: 9px;
     color: #222;
     margin-top: 2px;
     line-height: 1.1;
-}
 
-.signature-hint.enterprise {
-    margin-left: 225px;
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
 }
 
 .stamp-row {
@@ -941,9 +956,9 @@ table {
         <span class="line-short"></span> /
     </div>
     <div class="signature-hint enterprise">
-        должность&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        подпись&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        расшифровка подписи
+        <span class="hint-long">должность</span>
+        <span class="hint-mid">подпись</span>
+        <span class="hint-short">расшифровка подписи</span>
     </div>
 
     <div class="stamp-row">М.П.</div>
