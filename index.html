@@ -75,6 +75,11 @@
         color: #222;
     }
 
+   button.delete {
+        background: #ff9c9c;
+        color: #700b0b;
+    }
+
     .student-card {
         background: #fff;
         border-radius: 16px;
@@ -322,6 +327,7 @@
         <div class="buttons">
             <button onclick="addStudent()">Добавить студента</button>
             <button onclick="generatePdfView()">Скачать табель</button>
+            <button class="delete" onclick="deleteStudent()">Удалить студента</button>
             <button class="secondary" onclick="expandAll()">Развернуть всех</button>
             <button class="secondary" onclick="collapseAll()">Свернуть всех</button>
         </div>
@@ -390,7 +396,13 @@
         renderStudents();
         openStudent(student.id);
     }
+   
 
+    function deleteStudent() {
+        document.getElementById('nextStudentId++').remove();
+    }
+
+   
     function collapseAll() {
         document.querySelectorAll(".student-card").forEach(card => {
             card.classList.add("collapsed");
