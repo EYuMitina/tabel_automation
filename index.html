@@ -407,7 +407,7 @@
    
 
     function deleteStudent(id) {
-        const student = students.filter(s => s.id == id);
+        students = students.filter(s => s.id == id);
         renderStudents();
     }
 
