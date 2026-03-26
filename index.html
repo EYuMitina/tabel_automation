@@ -830,6 +830,10 @@ table {
 }
 
 .signature-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
     margin-bottom: 18px;
     font-size: 14px;
 }
@@ -918,8 +922,9 @@ table {
 
         <div class="signatures">
     <div class="signature-row">
-        Руководитель практики от предприятия
-
+        <div class="signature-label">
+            Руководитель практики от предприятия
+        </div>
         <div class="lines">
             <div class="line-block">
                 <div class="line line-long"></div>
@@ -941,8 +946,9 @@ table {
     <div class="stamp">М.П.</div>
 
     <div class="signature-row">
-        Руководитель практики от колледжа
-
+        <div class="signature-label">
+            Руководитель практики от колледжа
+        </div>
         <div class="lines">
             <div class="line-block">
                 <div class="line line-mid"></div>
