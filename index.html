@@ -407,9 +407,20 @@
    
 
     function deleteStudent(id) {
-        students = students.filter(s => s.id == id);
-        renderStudents();
+    students = students.filter(s => s.id !== id);
+
+    const el = document.getElementById("student-" + id);
+
+    if (el) {
+        el.style.transition = "0.3s";
+        el.style.opacity = "0";
+        el.style.transform = "scale(0.95)";
+
+        setTimeout(() => {
+            el.remove();
+        }, 300);
     }
+}
 
    
     function collapseAll() {
