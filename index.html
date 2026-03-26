@@ -75,11 +75,20 @@
         color: #222;
     }
 
-   button.delete {
-        background: #ff9c9c;
-        color: #700b0b;
+   .delete-btn {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 15px;
+        padding: 6px;
+        border-radius: 8px;
+        color: #ef4444;
     }
 
+   .delete-btn:hover {
+         background: #fee2e2;
+    }
+   
     .student-card {
         background: #fff;
         border-radius: 16px;
@@ -327,7 +336,6 @@
         <div class="buttons">
             <button onclick="addStudent()">Добавить студента</button>
             <button onclick="generatePdfView()">Скачать табель</button>
-            <button class="delete" onclick="deleteStudent()">Удалить студента</button>
             <button class="secondary" onclick="expandAll()">Развернуть всех</button>
             <button class="secondary" onclick="collapseAll()">Свернуть всех</button>
         </div>
@@ -399,7 +407,8 @@
    
 
     function deleteStudent() {
-        document.getElementById('nextStudentId').remove() = removeElement;
+        const student = students.filter(s => s.id == id);
+        renderStudents();
     }
 
    
@@ -586,12 +595,16 @@
                             type="text"
                             placeholder="Введите ФИО студента"
                             value="${escapeHtml(student.name)}"
-                            onclick="event.stopPropagation()"
+                            onclick="event.stopPropagation()"; deleteStudent()
                             oninput="updateStudentName(${student.id}, this.value)"
                         >
                         <div class="student-subtitle" id="subtitle-${student.id}">
                             ${student.name.trim() === "" ? "ФИО не указано" : "Табель заполняется"}
                         </div>
+                     <button class="delete-btn"
+                         onclick="event.stopPropagation();deleteStudent(${student.id})">
+                         🗑️
+                         </button>
                     </div>
                     <div class="chevron">▸</div>
                 </div>
