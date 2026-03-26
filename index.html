@@ -826,74 +826,46 @@ table {
 }
 
 .signatures {
-    margin-top: 30px;
-    page-break-inside: avoid;
-    break-inside: avoid;
+    margin-top: 20px;
+}
+
+.signature-row {
+    margin-bottom: 18px;
     font-size: 14px;
 }
 
-/* строка с текстом и линиями */
-.signature-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-top: 18px;
-}
-
-.label {
-    white-space: nowrap;
-}
-
-/* контейнер линий */
 .lines {
     display: flex;
-    gap: 10px;
-    flex: 1;
+    gap: 20px;
+    margin-top: 6px;
 }
 
-/* сами линии */
+.line-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .line {
     border-bottom: 1px solid #000;
     height: 18px;
 }
 
-/* фиксированные ширины */
-.line-long  { width: 190px; }
-.line-mid   { width: 120px; }
-.line-short { width: 95px; }
+.line-long { width: 190px; }
+.line-mid  { width: 120px; }
+.line-short{ width: 95px; }
 
-/* подписи под линиями */
-.signature-hint {
-    display: flex;
-    gap: 10px;
-    margin-top: 4px;
-}
-
-/* подписи */
 .hint {
-    text-align: center;
-    font-size: 11px;
+    font-size: 10px;
+    margin-top: 3px;
 }
 
-.hint-long  { width: 190px; }
-.hint-mid   { width: 120px; }
-.hint-short { width: 95px; }
-
-/* печать (М.П.) */
 .stamp {
-    margin-top: 18px;
-    margin-left: 50%;
+    margin: 18px 0;
+    margin-left: 320px;
     font-size: 14px;
 }
 
-/* второй блок */
-.signature-college {
-    margin-top: 26px;
-}
-
-.hint-college {
-    margin-left: auto;
-}
 @media print {
     .print-controls {
         display: none !important;
@@ -945,44 +917,45 @@ table {
         </div>
 
         <div class="signatures">
-
-    <!-- ПРЕДПРИЯТИЕ -->
     <div class="signature-row">
-        <span class="label">Руководитель практики от предприятия</span>
+        Руководитель практики от предприятия
 
         <div class="lines">
-            <span class="line line-long"></span>
-            <span class="line line-mid"></span>
-            <span class="line line-short"></span>
-        </div>
-    </div>
+            <div class="line-block">
+                <div class="line line-long"></div>
+                <div class="hint">должность</div>
+            </div>
 
-    <div class="signature-hint">
-        <span class="hint hint-long">должность</span>
-        <span class="hint hint-mid">подпись</span>
-        <span class="hint hint-short">расшифровка подписи</span>
+            <div class="line-block">
+                <div class="line line-mid"></div>
+                <div class="hint">подпись</div>
+            </div>
+
+            <div class="line-block">
+                <div class="line line-short"></div>
+                <div class="hint">расшифровка подписи</div>
+            </div>
+        </div>
     </div>
 
     <div class="stamp">М.П.</div>
 
-    <!-- КОЛЛЕДЖ -->
-    <div class="signature-row signature-college">
-        <span class="label">Руководитель практики от колледжа</span>
+    <div class="signature-row">
+        Руководитель практики от колледжа
 
         <div class="lines">
-            <span class="line line-mid"></span>
-            <span class="line line-long"></span>
+            <div class="line-block">
+                <div class="line line-mid"></div>
+                <div class="hint">подпись</div>
+            </div>
+
+            <div class="line-block">
+                <div class="line line-long"></div>
+                <div class="hint">расшифровка подписи</div>
+            </div>
         </div>
     </div>
-
-    <div class="signature-hint hint-college">
-        <span class="hint hint-mid">подпись</span>
-        <span class="hint hint-long">расшифровка подписи</span>
-    </div>
-
 </div>
-
-    </div>
 </body>
 </html>
         `;
