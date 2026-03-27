@@ -914,6 +914,7 @@ table {
     font-size: 14px;
 }
 
+
 @media print {
     .print-controls {
         display: none !important;
@@ -922,6 +923,11 @@ table {
     body {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
+    }
+
+    @page {
+        size: A4 landscape;
+        margin: 10mm;
     }
 }
 </style>
