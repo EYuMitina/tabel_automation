@@ -406,10 +406,18 @@
     function addStudent() {
 
        if (students.length > 0) {
+   
            const lastStudent = students[students.length - 1];
+   
+           if (!lastStudent.name || lastStudent.name.trim() === "") {
+               alert("Сначала заполните ФИО предыдущего студента");
+               return;
+           }
+   
+          
            const lastCard = document.getElementById(`student-${lastStudent.id}`);
    
-           if (lastCard && !lastCard.classList.contains("collapsed")) {
+           if (lastCard) {
                lastCard.classList.add("collapsed");
    
                const content = lastCard.querySelector(".student-content");
@@ -417,15 +425,6 @@
    
                const chevron = lastCard.querySelector(".chevron");
                if (chevron) chevron.textContent = "▸";
-           }
-       }
-   
-      
-       if (students.length > 0) {
-           const last = students[students.length - 1];
-           if (!last.name || last.name.trim() === "") {
-               alert("Сначала заполните ФИО предыдущего студента");
-               return;
            }
        }
    
