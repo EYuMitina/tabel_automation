@@ -404,18 +404,51 @@
     }
 
     function addStudent() {
-        collapseAll();
 
-        const student = {
-            id: nextStudentId++,
-            name: "",
-            statuses: {}
-        };
-
-        students.push(student);
-        renderStudents();
-        openStudent(student.id);
-    }
+       if (students.length > 0) {
+           const lastStudent = students[students.length - 1];
+           const lastCard = document.getElementById(`student-${lastStudent.id}`);
+   
+           if (lastCard && !lastCard.classList.contains("collapsed")) {
+               lastCard.classList.add("collapsed");
+   
+               const content = lastCard.querySelector(".student-content");
+               if (content) content.style.display = "none";
+   
+               const chevron = lastCard.querySelector(".chevron");
+               if (chevron) chevron.textContent = "▸";
+           }
+       }
+   
+      
+       if (students.length > 0) {
+           const last = students[students.length - 1];
+           if (!last.name || last.name.trim() === "") {
+               alert("Сначала заполните ФИО предыдущего студента");
+               return;
+           }
+       }
+   
+       const newStudent = {
+           id: Date.now(),
+           name: "",
+           attendance: {}
+       };
+   
+       students.push(newStudent);
+   
+       renderStudents();
+   
+       setTimeout(() => {
+           const input = document.querySelector(
+               `#student-${newStudent.id} .student-name-input`
+           );
+           if (input) {
+               input.focus();
+               input.select();
+           }
+       }, 0);
+   }
    
 
     function deleteStudent(id) {
