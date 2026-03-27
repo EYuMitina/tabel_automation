@@ -325,7 +325,6 @@
             <div>
                 <label for="globalYear">Год</label>
                 <select id="globalYear" onchange="updateAllCalendars()">
-                    <option value="2025">2025</option>
                     <option value="2026" selected>2026</option>
                     <option value="2027">2027</option>
                     <option value="2028">2028</option>
@@ -600,25 +599,26 @@
         container.innerHTML = students.map(student => `
             <div class="student-card" id="student-${student.id}">
                 <div class="student-header" onclick="toggleStudent(${student.id})">
-                    <div class="student-title">
-                        <input
-                            class="student-name-input"
-                            type="text"
-                            placeholder="Введите ФИО студента"
-                            value="${escapeHtml(student.name)}"
-                            onclick="event.stopPropagation()"; deleteStudent()
-                            oninput="updateStudentName(${student.id}, this.value)"
-                        >
-                        <div class="student-subtitle" id="subtitle-${student.id}">
-                            ${student.name.trim() === "" ? "ФИО не указано" : "Табель заполняется"}
-                        </div>
-                     <button class="delete-btn"
-                         onclick="event.stopPropagation();deleteStudent(${student.id})">
-                         🗑️
-                         </button>
-                    </div>
-                    <div class="chevron">▸</div>
-                </div>
+
+                         <div class="left">
+                             <span class="chevron">▸</span>
+                         </div>
+                     
+                         <div class="center" onclick="event.stopPropagation()">
+                             <input
+                                 class="student-name-input"
+                                 type="text"
+                                 placeholder="ФИО студента"
+                                 value="${escapeHtml(student.name)}"
+                                 oninput="updateStudentName(${student.id}, this.value)"
+                             >
+                         </div>
+                     
+                         <div class="right" onclick="event.stopPropagation()">
+                             <button class="delete-btn" onclick="deleteStudent(${student.id})">🗑</button>
+                         </div>
+                     
+                     </div>
                 <div class="student-body">
                     ${buildCalendar(student)}
                 </div>
