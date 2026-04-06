@@ -403,51 +403,51 @@
         return (jsDay === 0 || jsDay === 6) ? "В" : "Я";
     }
 
-    function addStudent() {
+function addStudent() {
 
-       if (students.length > 0) {
-   
-           const lastStudent = students[students.length - 1];
-   
-           if (!lastStudent.name || lastStudent.name.trim() === "") {
-               alert("Сначала заполните ФИО предыдущего студента");
-               return;
-           }
-   
-          
-           const lastCard = document.getElementById(`student-${lastStudent.id}`);
-   
-           if (lastCard) {
-               lastCard.classList.add("collapsed");
-   
-               const content = lastCard.querySelector(".student-content");
-               if (content) content.style.display = "none";
-   
-               const chevron = lastCard.querySelector(".chevron");
-               if (chevron) chevron.textContent = "▸";
-           }
-       }
-   
-       const newStudent = {
-           id: Date.now(),
-           name: "",
-           attendance: {}
-       };
-   
-       students.push(newStudent);
-   
-       renderStudents();
-   
-       setTimeout(() => {
-           const input = document.querySelector(
-               `#student-${newStudent.id} .student-name-input`
-           );
-           if (input) {
-               input.focus();
-               input.select();
-           }
-       }, 0);
-   }
+    if (students.length > 0) {
+        const lastStudent = students[students.length - 1];
+
+        if (!lastStudent.name || lastStudent.name.trim() === "") {
+            alert("Сначала заполните ФИО предыдущего студента");
+            return;
+        }
+    }
+
+    const newStudent = {
+        id: Date.now(),
+        name: "",
+        statuses: {}
+    };
+
+    students.push(newStudent);
+
+    renderStudents();
+
+    document.querySelectorAll(".student-card").forEach(card => {
+        card.classList.add("collapsed");
+        const ch = card.querySelector(".chevron");
+        if (ch) ch.textContent = "▸";
+    });
+
+    const newCard = document.getElementById(`student-${newStudent.id}`);
+    if (newCard) {
+        newCard.classList.remove("collapsed");
+
+        const ch = newCard.querySelector(".chevron");
+        if (ch) ch.textContent = "▾";
+    }
+
+    setTimeout(() => {
+        const input = document.querySelector(
+            `#student-${newStudent.id} .student-name-input`
+        );
+        if (input) {
+            input.focus();
+            input.select();
+        }
+    }, 50);
+}
    
 
     function deleteStudent(id) {
